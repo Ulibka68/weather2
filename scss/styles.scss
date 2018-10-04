@@ -1,0 +1,11 @@
+.testing {
+  width: percentage(5/7);
+}
+
+$color : #212cff;
+
+
+a {
+  color: lighten($color, 20% );
+  @debug lighten($color, 20%);
+}
