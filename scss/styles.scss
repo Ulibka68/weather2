@@ -9,3 +9,11 @@ a {
   color: lighten($color, 20% );
   @debug lighten($color, 20%);
 }
+
+$imgWidth : 100px;
+
+.CurrentWeatherImg {
+  object-fit: cover;
+  width: $imgWidth;
+  height: $imgWidth;
+}
