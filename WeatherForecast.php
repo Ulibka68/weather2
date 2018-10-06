@@ -53,7 +53,7 @@ $owm = new OpenWeatherMap('a4b54ac1bc011d79f42efefcf2e86e1d');
 $forecast = $owm->getWeatherForecast('Korolev, RU', $units, $lang, '', 1);
 $weather = $owm->getWeather('Korolev, RU', $units, $lang);
 $weather->lastUpdate->setTimezone($DTZ);
-
+//$weather->lastUpdate->add(new DateInterval('PT4H'));
 echo "Температура сейчас :" . $weather->lastUpdate->format('d.m.Y H:i : ') . $weather->temperature . "<br /><br>\n";
 echo "<img src='./img/" . $weather->weather->icon . ".png'>" . "<br />\n";
 

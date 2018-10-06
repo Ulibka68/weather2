@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<button>Управление</button>
+
+<div class="curTempFlexContainer">
+    <div style="align-content: center; text-align: center;">
+        Температура сейчас на {{ curTime }}<br>
+        <span class="TempSel">{{ curTemp }}</span> <br />
+    </div>
+    <div style="flex-grow: 1;align-self: center;align-content: center; text-align: center;">
+        <img src='{{ currIcon }}' class="igmWeatherCurrentIcon"><br />
+        {{ curDescr }}
+    </div>
+</div>
+
+<H2>Город: Korolev<br></H2>
+Заход солнца : {{ curSunSet }}<br />
+
+{% for w in forecastTmp %}
+    <div class="curTempFlexContainer">
+        <div style="align-content: center; text-align: center;">
+            на {{ w.from }}<br>
+            <span class="TempSel">{{ w.temperature }}</span> <br />
+        </div>
+        <div style="flex-grow: 1;align-self: center;align-content: center; text-align: center;">
+            <img src='{{ w.imgSrc }}' class="igmWeatherCurrentIcon"><br>{{ w.description }}
+        </div>
+    </div>
+{% endfor %}
+
+
+</body>
+</html>

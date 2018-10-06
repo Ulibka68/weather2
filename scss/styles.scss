@@ -1,19 +1,20 @@
-.testing {
-  width: percentage(5/7);
-}
-
-$color : #212cff;
-
-
-a {
-  color: lighten($color, 20% );
-  @debug lighten($color, 20%);
-}
-
 $imgWidth : 100px;
 
-.CurrentWeatherImg {
-  object-fit: cover;
+.igmWeatherCurrentIcon {
   width: $imgWidth;
   height: $imgWidth;
+  object-fit : cover;
+  padding-left : auto;
+}
+
+.TempSel {
+  font-size: 1.3rem;
+}
+
+.curTempFlexContainer {
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  //align-content: center;
 }

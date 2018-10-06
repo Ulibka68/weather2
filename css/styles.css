@@ -1,13 +1,17 @@
-.testing {
-  width: 71.42857%;
-}
-
-a {
-  color: #878dff;
-}
-
-.CurrentWeatherImg {
-  object-fit: cover;
+.igmWeatherCurrentIcon {
   width: 100px;
   height: 100px;
+  object-fit: cover;
+  padding-left: auto;
+}
+
+.TempSel {
+  font-size: 1.3rem;
+}
+
+.curTempFlexContainer {
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
