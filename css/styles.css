@@ -5,6 +5,13 @@
   padding-left: auto;
 }
 
+.igmWeatherForecastIcon {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  padding-left: auto;
+}
+
 .TempSel {
   font-size: 1.3rem;
 }

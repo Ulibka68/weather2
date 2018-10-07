@@ -20,6 +20,48 @@ use Cmfcmf\OpenWeatherMap;
 
 require 'vendor/autoload.php';
 
+class OpenWeatherMapXML extends OpenWeatherMap
+{
+    /**
+     * @param string $answer The content returned by OpenWeatherMap.
+     *
+     * @return \SimpleXMLElement
+     * @throws OWMException If the content isn't valid XML.
+     */
+    private function parseXML($answer)
+    {
+        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
+        libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        try {
+            return new \SimpleXMLElement($answer);
+        } catch (\Exception $e) {
+            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
+            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
+            $error = json_decode($answer, true);
+            if (isset($error['message'])) {
+                throw new OWMException($error['message'], isset($error['cod']) ? $error['cod'] : 0);
+            } else {
+                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
+            }
+        }
+    }
+
+    public function getWeatherForecastXML($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
+    {
+        if ($days <= 5) {
+            $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
+        } elseif ($days <= 16) {
+            $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
+        } else {
+            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
+        }
+        $xml = $this->parseXML($answer);
+        return $xml;
+    }
+}
+
+
 // Language of data (try your own language here!):
 $lang = 'ru';
 $DTZ=new DateTimeZone('Europe/Moscow');
@@ -28,44 +70,66 @@ $DTZ=new DateTimeZone('Europe/Moscow');
 $units = 'metric';
 
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap('a4b54ac1bc011d79f42efefcf2e86e1d');
+$owm = new OpenWeatherMapXML('a4b54ac1bc011d79f42efefcf2e86e1d');
 
-$forecast = $owm->getWeatherForecast('Korolev, RU', $units, $lang, '', 1);
+$forecast = $owm->getWeatherForecastXML(554233, $units, $lang, 'a4b54ac1bc011d79f42efefcf2e86e1d', 1);
 //die(0);
 
-$weather = $owm->getWeather('Korolev, RU', $units, $lang);
+$weather = $owm->getWeather(554233, $units, $lang);
 
 $weather->lastUpdate->setTimezone($DTZ);
 
 $curTime=$weather->lastUpdate->format('H:i');
-$curTemp=$weather->temperature;
+$curTemp=strval(round($weather->temperature->now->getValue(),0)) . " °C";
 $curDescr=$weather->weather->description;
 $currIcon='./img/' . $weather->weather->icon . '.png';
 
-$forecast->sun->set->setTimezone($DTZ);
-$curSunSet= $forecast->sun->set->format("H:i:s");
+$weather->sun->set->setTimezone($DTZ);
+$curSunSet= $weather->sun->set->format("H:i:s");
 
 $forecastTmp =[];
+$a=$forecast->forecast->time[1] ;
 
-foreach ($forecast as $weather) {
+
+$utctz = new \DateTimeZone('UTC');
+$DTZ2=new DateTimeZone('+6');
+
+foreach ($forecast->forecast->time as $weather) {
+    $oneElem = [];
+    $fromT=new DateTime($weather['from'],$utctz);
+    $fromT->setTimezone($DTZ2);
+    $oneElem['from'] =$fromT->format('d.m H:i');
+    $temp=round(floatval($weather->temperature['value']),0);
+    $oneElem['temperature']=strval( $temp) . " °C" ;
+    $symNumber=intval($weather->symbol['number']); // 50
+    $symDescription=strval($weather->symbol['name']); // легкий дождь
+    $oneElem['description'] =$symDescription;
+    $iconName=strval($weather->symbol['var']);
+    $oneElem['imgSrc'] =   './img/' . $iconName . '.png';
+
+    $forecastTmp[]=$oneElem;
+}
+
+/*
+foreach ($forecast.forecast.time as $weather) {
     $oneElem = [];
     // Each $weather contains a Cmfcmf\ForecastWeather object which is almost the same as the Cmfcmf\Weather object.
     // Take a look into 'Examples_Current.php' to see the available options.
 
     $weather->time->from->setTimezone($DTZ);
-    $oneElem['from'] =   $weather->time->from->format('H:i');
-    $oneElem['temperature'] =   $weather->temperature ;
+    $oneElem['from'] =   $weather->time->from->format('d.m H:i');
+    $oneElem['temperature'] =  strval( $weather->temperature->getValue()) . " °C" ;
+//    $oneElem['temperature'] =  strval( round($weather->temperature->getValue(),0)) . " °C" ;
     $oneElem['imgSrc'] =   './img/' . $weather->weather->icon . '.png';
     $oneElem['description'] =  $weather->weather->description ;
     $forecastTmp[]=$oneElem;
 }
-
+*/
 //die(0);
 
 $loader = new Twig_Loader_Filesystem('templates');
-$twig = new Twig_Environment($loader, array(
-    'cache' => 'cache',
-));
+//$twig = new Twig_Environment($loader, array('cache' => 'cache',));
+$twig = new Twig_Environment($loader);
 
 echo $twig->render('forecast.tmpl', array(
     'forecastTmp' => $forecastTmp,

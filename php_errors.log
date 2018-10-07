@@ -1,0 +1,8 @@
+[06-Oct-2018 09:56:13 UTC] PHP Warning:  file_get_contents(): Unable to find the wrapper &quot;https&quot; - did you forget to enable it when you configured PHP? in E:\OSPanel\domains\weather2\vendor\cmfcmf\openweathermap-php-api\Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher.php on line 32
+[06-Oct-2018 09:56:13 UTC] PHP Warning:  file_get_contents(https://api.openweathermap.org/data/2.5/forecast?q=Korolev%2C+RU&amp;units=metric&amp;lang=ru&amp;mode=xml&amp;APPID=a4b54ac1bc011d79f42efefcf2e86e1d): failed to open stream: No error in E:\OSPanel\domains\weather2\vendor\cmfcmf\openweathermap-php-api\Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher.php on line 32
+[06-Oct-2018 09:56:13 UTC] PHP Fatal error:  Uncaught Cmfcmf\OpenWeatherMap\Exception: Unknown fatal error: OpenWeatherMap returned the following json object:  in E:\OSPanel\domains\weather2\vendor\cmfcmf\openweathermap-php-api\Cmfcmf\OpenWeatherMap.php:706
+Stack trace:
+#0 E:\OSPanel\domains\weather2\vendor\cmfcmf\openweathermap-php-api\Cmfcmf\OpenWeatherMap.php(249): Cmfcmf\OpenWeatherMap->parseXML(false)
+#1 E:\OSPanel\domains\weather2\WeatherForecastTwig.php(33): Cmfcmf\OpenWeatherMap->getWeatherForecast('Korolev, RU', 'metric', 'ru', '', 1)
+#2 {main}
+  thrown in E:\OSPanel\domains\weather2\vendor\cmfcmf\openweathermap-php-api\Cmfcmf\OpenWeatherMap.php on line 706

@@ -1,8 +1,16 @@
 $imgWidth : 100px;
+$imgWidthForecast : 70px;
 
 .igmWeatherCurrentIcon {
   width: $imgWidth;
   height: $imgWidth;
+  object-fit : cover;
+  padding-left : auto;
+}
+
+.igmWeatherForecastIcon {
+  width: $imgWidthForecast;
+  height: $imgWidthForecast;
   object-fit : cover;
   padding-left : auto;
 }
