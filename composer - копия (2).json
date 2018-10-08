@@ -1,0 +1,9 @@
+{
+    
+    "require": {
+        
+        "twig/twig": "^2.5",
+        "cmfcmf/openweathermap-php-api": "^2.4"
+    
+    }
+}

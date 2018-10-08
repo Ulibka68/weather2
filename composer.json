@@ -1,6 +1,14 @@
 {
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/Ulibka68/OpenWeatherMap-PHP-Api/tree/dev-master/Cmfcmf"
+        }
+    ],
+
     "require": {
-        "cmfcmf/openweathermap-php-api": "^2.4"  ,
+        
+        "cmfcmf/openweathermap-php-api"   : "dev-master",
         "twig/twig": "^2.5"
     
     }

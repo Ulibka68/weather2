@@ -20,46 +20,49 @@ use Cmfcmf\OpenWeatherMap;
 
 require 'vendor/autoload.php';
 
-class OpenWeatherMapXML extends OpenWeatherMap
-{
-    /**
-     * @param string $answer The content returned by OpenWeatherMap.
-     *
-     * @return \SimpleXMLElement
-     * @throws OWMException If the content isn't valid XML.
-     */
-    private function parseXML($answer)
-    {
-        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
-        libxml_use_internal_errors(true);
-        libxml_clear_errors();
-        try {
-            return new \SimpleXMLElement($answer);
-        } catch (\Exception $e) {
-            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
-            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
-            $error = json_decode($answer, true);
-            if (isset($error['message'])) {
-                throw new OWMException($error['message'], isset($error['cod']) ? $error['cod'] : 0);
-            } else {
-                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
-            }
-        }
-    }
 
-    public function getWeatherForecastXML($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
-    {
-        if ($days <= 5) {
-            $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
-        } elseif ($days <= 16) {
-            $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
-        } else {
-            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
-        }
-        $xml = $this->parseXML($answer);
-        return $xml;
-    }
-}
+//class OpenWeatherMapXML extends OpenWeatherMap
+//{
+//    /**
+//     * @param string $answer The content returned by OpenWeatherMap.
+//     *
+//     * @return \SimpleXMLElement
+//     * @throws OWMException If the content isn't valid XML.
+//     */
+//    private function parseXML($answer)
+//    {
+//        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
+//        libxml_use_internal_errors(true);
+//        libxml_clear_errors();
+//        try {
+//            return new \SimpleXMLElement($answer);
+//        } catch (\Exception $e) {
+//            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
+//            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
+//            $error = json_decode($answer, true);
+//            if (isset($error['message'])) {
+//                throw new OWMException($error['message'], isset($error['cod']) ? $error['cod'] : 0);
+//            } else {
+//                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
+//            }
+//        }
+//    }
+//
+//    public function getWeatherForecastXML($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
+//    {
+//        $this->weatherHourlyForecastUrl='https://ru.api.openweathermap.org/data/2.5/forecast?';
+//        if ($days <= 5) {
+//            $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
+//        } elseif ($days <= 16) {
+//            $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
+//        } else {
+//            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
+//        }
+//        $xml = $this->parseXML($answer);
+//        return $xml;
+//    }
+//}
+
 
 
 // Language of data (try your own language here!):
@@ -70,11 +73,12 @@ $DTZ=new DateTimeZone('Europe/Moscow');
 $units = 'metric';
 
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMapXML('a4b54ac1bc011d79f42efefcf2e86e1d');
+$owm = new OpenWeatherMap('a4b54ac1bc011d79f42efefcf2e86e1d');
 
 $forecast = $owm->getWeatherForecastXML(554233, $units, $lang, 'a4b54ac1bc011d79f42efefcf2e86e1d', 1);
 //die(0);
 
+$owm->weatherUrl='https://ru.api.openweathermap.org/data/2.5/weather?';
 $weather = $owm->getWeather(554233, $units, $lang);
 
 $weather->lastUpdate->setTimezone($DTZ);
